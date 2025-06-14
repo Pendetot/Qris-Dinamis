@@ -332,6 +332,50 @@ Kontribusi sangat diterima! Silakan:
 
 [MIT License](LICENSE)
 
+## 📁 Struktur Proyek (Terbaru)
+
+Proyek telah diorganisir dengan struktur yang lebih rapi dan terstruktur:
+
+```
+Qris-Dinamis/
+├── src/                    # Source code utama
+│   ├── controllers/        # Route controllers (untuk pengembangan future)
+│   ├── middleware/         # Express middleware
+│   │   ├── errorHandler.js # Error handling middleware
+│   │   └── upload.js       # File upload middleware
+│   ├── routes/             # API routes
+│   │   └── qris.js         # QRIS endpoints
+│   ├── services/           # Business logic
+│   │   ├── qrisService.js  # QRIS processing service
+│   │   └── qrReaderService.js # QR code reader service
+│   ├── utils/              # Utility functions
+│   │   └── qris.js         # QRIS generation utilities (sebelumnya qrDinamis.js)
+│   └── config/             # Configuration files (untuk pengembangan future)
+├── public/                 # Static files
+│   └── test.html          # Test page untuk API (dipindahkan dari root)
+├── uploads/                # File upload directory
+│   └── .gitkeep           # Keep directory in git
+├── .env.example           # Environment variables template
+├── .gitignore             # Git ignore rules (diperbarui)
+├── package.json           # Node.js dependencies
+├── server.js              # Main server file
+└── README.md              # Project documentation
+```
+
+### Perubahan Struktur:
+- **Organisasi yang lebih baik**: Semua source code dipindahkan ke folder `src/`
+- **Pemisahan concerns**: Middleware, routes, services, dan utilities dipisahkan ke folder masing-masing
+- **Static files**: File `test.html` dipindahkan ke folder `public/`
+- **Utilities**: File `qrDinamis.js` dipindahkan ke `src/utils/qris.js`
+- **Environment template**: Ditambahkan `.env.example` untuk template konfigurasi
+- **Improved gitignore**: File `.gitignore` diperbarui dengan rules yang lebih lengkap
+
+### Keuntungan Struktur Baru:
+- **Maintainability**: Kode lebih mudah dipelihara dan dikembangkan
+- **Scalability**: Struktur siap untuk pengembangan fitur yang lebih kompleks
+- **Best Practices**: Mengikuti standar industri untuk proyek Node.js
+- **Team Development**: Memudahkan kolaborasi tim dengan struktur yang jelas
+
 ## 📞 Dukungan
 
 Jika mengalami masalah atau memiliki pertanyaan, silakan buat issue di repository ini.

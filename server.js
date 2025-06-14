@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import qrisRoutes from './routes/qris.js';
-import errorHandler from './middleware/errorHandler.js';
+import qrisRoutes from './src/routes/qris.js';
+import errorHandler from './src/middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use(express.static('.'));
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/qris', qrisRoutes);

@@ -1,4 +1,4 @@
-import { qrisDinamis, qrisDinamisBuffer } from '../qrDinamis.js';
+import { qrisDinamis, qrisDinamisBuffer } from '../utils/qris.js';
 import { readQRCode } from './qrReaderService.js';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -76,7 +76,7 @@ const generateDynamicQRIS = async (qrisId, baseNominal) => {
     const finalNominal = parseInt(`${baseNominal}${randomDigits}`);
     
     // Generate output path
-    const outputPath = path.join(__dirname, '../uploads', `qris_dynamic_${qrisId}.jpg`);
+    const outputPath = path.join(__dirname, '../../uploads', `qris_dynamic_${qrisId}.jpg`);
     
     try {
         // Generate dynamic QRIS
