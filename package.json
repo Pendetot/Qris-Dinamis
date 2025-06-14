@@ -1,0 +1,24 @@
+{
+  "name": "qris-dinamis-api",
+  "version": "1.0.0",
+  "description": "REST API for Dynamic QRIS Generation",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5",
+    "uuid": "^9.0.1",
+    "qrcode": "^1.5.3",
+    "qrcode-reader": "^1.0.4",
+    "jimp": "^0.22.10",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["qris", "api", "dynamic", "qr-code"],
+  "author": "",
+  "license": "MIT"
+}

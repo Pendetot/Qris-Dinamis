@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRIS Dynamic API Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
+                <i class="fas fa-qrcode text-blue-600"></i>
+                QRIS Dynamic API
+            </h1>
+            <p class="text-center text-gray-600 mb-6">REST API untuk Generate QRIS Dinamis</p>
+            
+            <!-- API Endpoints Documentation -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 mb-3">
+                        <i class="fas fa-upload"></i> Upload QRIS Statis
+                    </h3>
+                    <div class="text-sm">
+                        <p class="font-mono bg-blue-100 p-2 rounded mb-2">POST /api/qris/upload</p>
+                        <p class="text-gray-700">Upload gambar QRIS statis untuk diproses</p>
+                        <p class="text-xs text-gray-600 mt-1">Form-data: qris (file)</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-800 mb-3">
+                        <i class="fas fa-cogs"></i> Generate QRIS Dinamis
+                    </h3>
+                    <div class="text-sm">
+                        <p class="font-mono bg-green-100 p-2 rounded mb-2">POST /api/qris/generate</p>
+                        <p class="text-gray-700">Generate QRIS dinamis dengan nominal</p>
+                        <p class="text-xs text-gray-600 mt-1">JSON: {qrisId, nominal}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-purple-800 mb-3">
+                        <i class="fas fa-download"></i> Download QRIS
+                    </h3>
+                    <div class="text-sm">
+                        <p class="font-mono bg-purple-100 p-2 rounded mb-2">GET /api/qris/:id</p>
+                        <p class="text-gray-700">Download file QRIS yang sudah di-generate</p>
+                        <p class="text-xs text-gray-600 mt-1">Response: Image file</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-orange-800 mb-3">
+                        <i class="fas fa-info-circle"></i> Info QRIS
+                    </h3>
+                    <div class="text-sm">
+                        <p class="font-mono bg-orange-100 p-2 rounded mb-2">GET /api/qris/:id/info</p>
+                        <p class="text-gray-700">Informasi QRIS tanpa download file</p>
+                        <p class="text-xs text-gray-600 mt-1">Response: JSON info</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Form -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                <i class="fas fa-test-tube"></i> Test API
+            </h2>
+            
+            <!-- Step 1: Upload QRIS -->
+            <div class="mb-6 p-4 border border-gray-200 rounded-lg">
+                <h3 class="font-semibold text-gray-700 mb-3">Step 1: Upload QRIS Statis</h3>
+                <form id="uploadForm" class="space-y-3">
+                    <div>
+                        <input type="file" id="qrisFile" accept="image/*" 
+                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-upload"></i> Upload QRIS
+                    </button>
+                </form>
+                <div id="uploadResult" class="mt-3"></div>
+            </div>
+            
+            <!-- Step 2: Generate Dynamic QRIS -->
+            <div class="mb-6 p-4 border border-gray-200 rounded-lg">
+                <h3 class="font-semibold text-gray-700 mb-3">Step 2: Generate QRIS Dinamis</h3>
+                <form id="generateForm" class="space-y-3">
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <input type="text" id="qrisId" placeholder="QRIS ID (dari step 1)" 
+                               class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        <input type="number" id="nominal" placeholder="Nominal (contoh: 10000)" 
+                               class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
+                        <i class="fas fa-cogs"></i> Generate QRIS
+                    </button>
+                </form>
+                <div id="generateResult" class="mt-3"></div>
+            </div>
+            
+            <!-- API Response Display -->
+            <div id="responseDisplay" class="hidden p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-semibold text-gray-700 mb-2">API Response:</h3>
+                <pre id="responseContent" class="bg-gray-800 text-green-400 p-3 rounded text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+        
+        <!-- API Documentation -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                <i class="fas fa-book"></i> Cara Penggunaan
+            </h2>
+            <div class="space-y-4 text-gray-700">
+                <div class="flex items-start space-x-3">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold">1</span>
+                    <p>Upload gambar QRIS statis menggunakan endpoint <code class="bg-gray-100 px-2 py-1 rounded">/api/qris/upload</code></p>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold">2</span>
+                    <p>Simpan <code class="bg-gray-100 px-2 py-1 rounded">qrisId</code> yang dikembalikan dari response</p>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold">3</span>
+                    <p>Generate QRIS dinamis dengan mengirim <code class="bg-gray-100 px-2 py-1 rounded">qrisId</code> dan <code class="bg-gray-100 px-2 py-1 rounded">nominal</code> ke <code class="bg-gray-100 px-2 py-1 rounded">/api/qris/generate</code></p>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold">4</span>
+                    <p>Download QRIS yang sudah di-generate menggunakan <code class="bg-gray-100 px-2 py-1 rounded">/api/qris/:id</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://f6576fecb07597a310.blackbx.ai/api';
+        
+        // Upload Form Handler
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('qrisFile');
+            const resultDiv = document.getElementById('uploadResult');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.innerHTML = '<div class="text-red-600">Pilih file QRIS terlebih dahulu</div>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('qris', fileInput.files[0]);
+            
+            try {
+                resultDiv.innerHTML = '<div class="text-blue-600"><i class="fas fa-spinner fa-spin"></i> Uploading...</div>';
+                
+                const response = await fetch(`${API_BASE}/qris/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                displayResponse(data);
+                
+                if (data.success) {
+                    document.getElementById('qrisId').value = data.data.qrisId;
+                    resultDiv.innerHTML = `
+                        <div class="text-green-600">
+                            <i class="fas fa-check-circle"></i> Upload berhasil!
+                            <br><small>QRIS ID: ${data.data.qrisId}</small>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="text-red-600"><i class="fas fa-exclamation-circle"></i> ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="text-red-600"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</div>`;
+            }
+        });
+        
+        // Generate Form Handler
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const qrisId = document.getElementById('qrisId').value;
+            const nominal = document.getElementById('nominal').value;
+            const resultDiv = document.getElementById('generateResult');
+            
+            if (!qrisId || !nominal) {
+                resultDiv.innerHTML = '<div class="text-red-600">QRIS ID dan nominal harus diisi</div>';
+                return;
+            }
+            
+            try {
+                resultDiv.innerHTML = '<div class="text-blue-600"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
+                
+                const response = await fetch(`${API_BASE}/qris/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ qrisId, nominal: parseInt(nominal) })
+                });
+                
+                const data = await response.json();
+                displayResponse(data);
+                
+                if (data.success) {
+                    const downloadUrl = `${API_BASE}/qris/${data.data.qrisId}`;
+                    resultDiv.innerHTML = `
+                        <div class="text-green-600">
+                            <i class="fas fa-check-circle"></i> QRIS dinamis berhasil dibuat!
+                            <br><small>Nominal: Rp ${data.data.nominal.toLocaleString('id-ID')}</small>
+                            <br><a href="${downloadUrl}" target="_blank" class="text-blue-600 underline">
+                                <i class="fas fa-download"></i> Download QRIS
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="text-red-600"><i class="fas fa-exclamation-circle"></i> ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="text-red-600"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</div>`;
+            }
+        });
+        
+        function displayResponse(data) {
+            const responseDisplay = document.getElementById('responseDisplay');
+            const responseContent = document.getElementById('responseContent');
+            
+            responseContent.textContent = JSON.stringify(data, null, 2);
+            responseDisplay.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
