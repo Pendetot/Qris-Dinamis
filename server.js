@@ -14,6 +14,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files
+app.use(express.static('.'));
+
 // Routes
 app.use('/api/qris', qrisRoutes);
 
